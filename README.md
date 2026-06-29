@@ -147,56 +147,6 @@ python op_costs_measured.py \
 
 This allows missing primitives to be replaced by visible modeled constants. Results produced with `--allow-model` should not be described as fully locally measured.
 
-## Collecting machine information for reporting
-
-Run these commands on the host machine.
-
-### macOS host
-
-```bash
-system_profiler SPHardwareDataType
-sw_vers
-uname -a
-docker --version
-```
-
-### Linux host
-
-```bash
-lscpu | egrep 'Model name|Architecture|CPU\(s\)|Thread|Core|MHz'
-free -h
-lsb_release -a || cat /etc/os-release
-uname -a
-docker --version
-```
-
-Run this inside the Docker container to record the container environment:
-
-```bash
-cat /etc/os-release
-uname -a
-dpkg --print-architecture
-python --version
-
-python - <<'PY'
-import platform, gmpy2
-print("platform:", platform.platform())
-print("machine:", platform.machine())
-print("python:", platform.python_version())
-print("gmpy2:", gmpy2.version())
-print("GMP:", gmpy2.mp_version())
-
-try:
-    import petrelic
-    print("petrelic:", getattr(petrelic, "__version__", "unknown"))
-    from petrelic.multiplicative.pairing import G1, G2
-    gt = G1.generator().pair(G2.generator())
-    print("pairing test:", type(gt))
-except Exception as e:
-    print("petrelic error:", repr(e))
-PY
-```
-
 ## Troubleshooting
 
 ### `No module named 'petrelic'`
