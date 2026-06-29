@@ -147,48 +147,6 @@ python op_costs_measured.py \
 
 This allows missing primitives to be replaced by visible modeled constants. Results produced with `--allow-model` should not be described as fully locally measured.
 
-## Troubleshooting
-
-### `No module named 'petrelic'`
-
-You are likely in a fresh Docker container where dependencies have not been installed, or you did not use the benchmark image. Build and run the image:
-
-```bash
-docker build -t consult-ac-bench:py310 .
-docker run --rm -it -v "$PWD":/work -w /work consult-ac-bench:py310 bash
-```
-
-### `librelic... cannot enable executable stack`
-
-The Dockerfile clears this flag automatically using `patchelf`. If running manually, use:
-
-```bash
-find /usr/local/lib/python3.10/site-packages \
-  -name "librelic*.so" \
-  -exec patchelf --clear-execstack {} \;
-```
-
-### Output files exist inside Docker but not on the host
-
-Make sure Docker was launched with:
-
-```bash
--v "$PWD":/work -w /work
-```
-
-Then write outputs somewhere under `/work`, for example:
-
-```bash
---outdir results
-```
-
-If the container is still running, files can also be copied out with:
-
-```bash
-docker ps
-docker cp <container_id>:/work/results ./results-from-container
-```
-
 ## License
 
 
